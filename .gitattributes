@@ -1,0 +1,39 @@
+# ============================================================
+#  行尾符规范：仓库内统一 LF，避免不同 Git 配置导致的整仓假改动
+#  注意：源文件为 GBK 编码，GBK 的尾字节范围不含 0x0D/0x0A，
+#        行尾归一化不会破坏中文注释。
+# ============================================================
+
+* text=auto eol=lf
+
+# ---- 源码与工程文件 ----
+*.c        text eol=lf
+*.h        text eol=lf
+*.s        text eol=lf
+*.md       text eol=lf
+*.json     text eol=lf
+*.ioc      text eol=lf
+*.mxproject text eol=lf
+*.uvprojx  text eol=lf
+*.uvoptx   text eol=lf
+*.scvd     text eol=lf
+*.dbgconf  text eol=lf
+*.ini      text eol=lf
+
+# ---- Windows 批处理必须是 CRLF ----
+*.bat      text eol=crlf
+
+# ---- 二进制，不做任何转换、不参与 diff ----
+*.pdf      binary
+*.dll      binary
+*.lib      binary
+*.a        binary
+*.hex      binary
+*.axf      binary
+*.bin      binary
+*.o        binary
+*.crf      binary
+*.zip      binary
+*.png      binary
+*.jpg      binary
+*.ico      binary

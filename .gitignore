@@ -1,0 +1,56 @@
+# ============================================================
+#  RoboMaster OmniInfantry  —  Git ignore rules
+#  Keil MDK-ARM / STM32CubeMX 工程
+# ============================================================
+
+# ---- Keil 编译产物 / build output ------------------------------
+# MDK 输出目录（.o .crf .d .axf .hex .map ...）
+**/MDK-ARM/HAL_Template/
+**/MDK-ARM/*/*.o
+*.o
+*.d
+*.crf
+*.axf
+*.htm
+*.lnp
+*.sct
+*.map
+*.dep
+*.lst
+*.bak
+*.Bak
+*.iex
+*.scvd.bak
+
+# ---- Keil 用户个人配置 / per-user IDE state --------------------
+# 每个人的窗口布局，提交会一直冲突
+*.uvguix.*
+JLinkSettings.ini
+JLinkLog.txt
+*.uvoptx.bak
+
+# ---- 调试 / debug ---------------------------------------------
+**/DebugConfig/*.dbgconf.bak
+
+# ---- 系统 / OS ------------------------------------------------
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ---- 编辑器 / editors -----------------------------------------
+.idea/
+*.swp
+*~
+
+# ---- 压缩包与临时文件 / archives & scratch ---------------------
+*.zip
+*.rar
+*.7z
+*.tmp
+
+# ---- Keil Assistant / VSCode 插件生成的日志 -------------------
+**/.vscode/uv4.log
+**/.vscode/uv4.log.lock
+**/.vscode/keil-assistant.log
+# Keil Assistant 自动生成，含各人本机的 Keil 安装路径
+**/MDK-ARM/.vscode/c_cpp_properties.json
