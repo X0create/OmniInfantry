@@ -284,7 +284,7 @@ osDelay(30);
 }
 if(Gimbal_Motor[Yaw].Data.State==0)
 {
-DM_Motor_Command(&CAN1_TxFrame, &Gimbal_Motor[Yaw], Motor_Enable);
+DM_Motor_Command(&CAN2_TxFrame, &Gimbal_Motor[Yaw], Motor_Enable);
 osDelay(30);
 }
 

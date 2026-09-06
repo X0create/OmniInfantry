@@ -5,25 +5,6 @@
 RLS_Info_TypeDef RLS_Power_Info;
 LowPassFilter1p_Info_TypeDef LPF_Current[4];
 
-static float fm_sqrt_fast(float x) {
-    if (x <= 0.0f) return 0.0f;
-    
-    /* 使用改进的Quake III算法 */
-    int32_t u;
-    float f = x;
-    u = 0x5f375a86 - (u >> 1);  /* 比原始常量更精确 */
-    
-    /* 一次牛顿迭代 */
-    float xhalf = 0.5f * x;
-    f = f * (1.5f - xhalf * f * f);
-    
-    /* 根据精度需求决定是否进行第二次迭代 */
-#if FM_PRECISE_MODE
-    u.f = u.f * (1.5f - xhalf * u.f * u.f);
-#endif
-    
-    return x * f;
-}
 
 void PowerCtrl_Init(PowerCtrl_Typedef *PowerCtrl_Info, Chassis_Tpye_e Type, float Lamda, float P, float PowerCtrl_Param[POWERCTRL_TYPE_NUM])
 {
@@ -127,7 +108,7 @@ void PowerCtrl(PowerCtrl_Typedef *PowerCtrl_Info, PID_Info_TypeDef Pid[4], DJI_M
 
             if (PowerCtrl_Info->Delta >= 0)
             {
-                PowerCtrl_Info->Sqrt = fm_sqrt_fast(PowerCtrl_Info->Delta);
+                PowerCtrl_Info->Sqrt = sqrtf(PowerCtrl_Info->Delta);
                 if (Pid[i].Output >= 0)
                 {
                     PowerCtrl_Info->Torque[i] = (-PowerCtrl_Info->B + PowerCtrl_Info->Sqrt) / (2 * PowerCtrl_Info->A);

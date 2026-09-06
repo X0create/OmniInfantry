@@ -106,6 +106,17 @@
 #define SHOOT_FRICTION_STOP_RPM          1000
 
 
+/* Vision link ---------------------------------------------------------------*/
+/**
+  * @brief 视觉数据超时时间（ms）
+  * @note  超过此时间没收到 MiniPC 的新帧，就把 Distance 与 IF_Fire_Accept
+  *        清零，让自瞄回退到手动跟随。不做老化的话，MiniPC 掉线后
+  *        Vision_Info.Distance 会保持最后一个正值，
+  *        Gimbal_Task 的 if (Distance > 0) 永远成立，云台会锁死在陈旧目标上。
+  */
+#define VISION_TIMEOUT_MS                200
+
+
 /* IMU reslove constants ---------------------------------------------------*/
 /**
  * @brief the flag of bmi088 Calibration

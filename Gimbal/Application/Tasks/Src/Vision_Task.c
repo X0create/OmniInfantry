@@ -19,10 +19,15 @@
 #include "api_trajectory.h"
 #include "usbd_cdc_if.h"
 #include "Gimbal_Task.h"
+#include "config.h"
 
 /* Private variables -----------------------------------------------------------*/
 
 static void Vision_Send_Info(Vision_Info_Typedef *Vision_Info);
+
+/* 最近一次收到 MiniPC 数据的时刻，用于超时老化 */
+static volatile uint32_t Vision_LastRx_Tick = 0;
+
 /**
  * @brief structure that contains the information for the Vision.
  */
@@ -46,6 +51,14 @@ Vision_Info.Mode=RED;
   {
     Vision_Task_SysTick = osKernelSysTick();
     Vision_Send_Info(&Vision_Info);
+
+    /* MiniPC 掉线老化：超时后清掉目标与开火许可，让自瞄回退到手动跟随 */
+    if ((uint32_t)(osKernelSysTick() - Vision_LastRx_Tick) > VISION_TIMEOUT_MS)
+    {
+      Vision_Info.Distance       = 0;
+      Vision_Info.IF_Fire_Accept = false;
+    }
+
 		
     osDelayUntil(&Vision_Task_SysTick,1);
   }
@@ -100,6 +113,8 @@ static float bit8TOfloat32(uint8_t change_info[4])
 
 void Vision_Receive_Info(Vision_Info_Typedef *Vision_Info,uint8_t* Buf, const uint32_t *Len)
 {
+	Vision_LastRx_Tick = osKernelSysTick();   /* 收到新帧，刷新时间戳 */
+
 	Vision_Info->IF_Fire_Accept = Buf[1];
 	
 	Vision_Info->Int.Pitch[0] = Buf[2];
