@@ -117,15 +117,15 @@ void DJI_Motor_Info_Update(uint32_t *StdId, uint8_t *rxBuf, DJI_Motor_Info_Typed
   switch (DJI_Motor->Type)
   {
   case DJI_GM6020:
-    DJI_Motor->Data.angle = encoder_to_angle(&DJI_Motor->Data, 1.f, 8192);
+    DJI_Motor->Data.angle = encoder_to_angle(&DJI_Motor->Data, 1.f, DJI_ENCODER_RESOLUTION);
     break;
 
   case DJI_M3508:
-    DJI_Motor->Data.angle = encoder_to_anglesum(&DJI_Motor->Data, 3591.f / 187.f, 8192);
+    DJI_Motor->Data.angle = encoder_to_anglesum(&DJI_Motor->Data, M3508_REDUCTION_RATIO, DJI_ENCODER_RESOLUTION);
     break;
 
   case DJI_M2006:
-    DJI_Motor->Data.angle = encoder_to_anglesum(&DJI_Motor->Data, 90.f, 8192);
+    DJI_Motor->Data.angle = encoder_to_anglesum(&DJI_Motor->Data, M2006_REDUCTION_RATIO, DJI_ENCODER_RESOLUTION);
     break;
 
   default:
@@ -162,7 +162,7 @@ void RMD_Motor_Info_Update(uint32_t *StdId, uint8_t *rxBuf, RMD_L9025_Info_Typed
   switch (RMD_Motor->Type)
   {
   case RMD_L9025:
-    RMD_Motor->Data.angle = encoder_to_anglesum(&RMD_Motor->Data, 1.f, 32768);
+    RMD_Motor->Data.angle = encoder_to_anglesum(&RMD_Motor->Data, 1.f, RMD_ENCODER_RESOLUTION);
     break;
 
   default:
@@ -223,8 +223,8 @@ void DM_Motor_CAN_TxMessage(CAN_TxFrame_TypeDef *CAN_TxFrame, DM_Motor_Info_Type
     Postion_Tmp = float_to_uint(Postion, -DM_Motor->Param_Range.P_MAX, DM_Motor->Param_Range.P_MAX, 16);
     Velocity_Tmp = float_to_uint(Velocity, -DM_Motor->Param_Range.V_MAX, DM_Motor->Param_Range.V_MAX, 12);
     Torque_Tmp = float_to_uint(Torque, -DM_Motor->Param_Range.T_MAX, DM_Motor->Param_Range.T_MAX, 12);
-    KP_Tmp = float_to_uint(KP, 0, 500, 12);
-    KD_Tmp = float_to_uint(KD, 0, 5, 12);
+    KP_Tmp = float_to_uint(KP, 0, DM_KP_MAX, 12);
+    KD_Tmp = float_to_uint(KD, 0, DM_KD_MAX, 12);
 
     CAN_TxFrame->header.StdId = DM_Motor->CANFrame.TxStdId;
     CAN_TxFrame->Data[0] = (uint8_t)(Postion_Tmp >> 8);

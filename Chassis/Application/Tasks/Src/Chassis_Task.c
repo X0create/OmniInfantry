@@ -1,4 +1,5 @@
 #include "Chassis_Task.h"
+#include "config.h"    /* 底盘与发射控制参数 */
 
 static void Chassis_Init(void);
 static void Chassis_Target(void);
@@ -55,30 +56,30 @@ void Chassis_Init(void)
   {
     PID_Init(&PID_Chassis[i], PID_POSITION, ChassisPID_Param);
   }
-	PowerCtrl_Init(&Chassis_PowerCtrl,MACUNUM,0.99999,1e-5,PowerCtrl_Param);
+	PowerCtrl_Init(&Chassis_PowerCtrl,MACUNUM,CHASSIS_RLS_LAMBDA,CHASSIS_RLS_P_INIT,PowerCtrl_Param);
   PID_Init(&PID_Follow[0], PID_POSITION, FollowPID_Param[0]);
   PID_Init(&PID_Follow[1], PID_POSITION, FollowPID_Param[1]);
 	PID_Init(&Pid_PowerBuff,PID_POSITION,Pid_PowerBuff_Param);
-  Chassis_Info.Transform.MidAngle = 90.f;
-	Chassis_Info.Feedback.resistance[0]=-1500;
-	Chassis_Info.Feedback.resistance[1]=1000;
-	Chassis_Info.Feedback.resistance[2]=1400;
-	Chassis_Info.Feedback.resistance[3]=-1100;
+  Chassis_Info.Transform.MidAngle = CHASSIS_FOLLOW_MID_ANGLE;
+	Chassis_Info.Feedback.resistance[0]=CHASSIS_FRICTION_COMP_LF;
+	Chassis_Info.Feedback.resistance[1]=CHASSIS_FRICTION_COMP_LB;
+	Chassis_Info.Feedback.resistance[2]=CHASSIS_FRICTION_COMP_RB;
+	Chassis_Info.Feedback.resistance[3]=CHASSIS_FRICTION_COMP_RF;
 	
 	
 
 }
 void Chassis_Target()
 {
-  Chassis_Info.Row.Vx = Comm_Info.Move.Vx * 7;
-  Chassis_Info.Row.Vy = Comm_Info.Move.Vy * 7;
+  Chassis_Info.Row.Vx = Comm_Info.Move.Vx * CHASSIS_RC_TO_RPM_SCALE;
+  Chassis_Info.Row.Vy = Comm_Info.Move.Vy * CHASSIS_RC_TO_RPM_SCALE;
 
-  Chassis_Info.Target.Follow_Err = Chassis_Info.Transform.MidAngle - Gimbal_Motor.Data.Angle+45;
+  Chassis_Info.Target.Follow_Err = Chassis_Info.Transform.MidAngle - Gimbal_Motor.Data.Angle+CHASSIS_MOUNT_ANGLE_OFFSET;
   if (Chassis_Info.Target.Follow_Err > 180.f)
     Chassis_Info.Target.Follow_Err -= 360.f;
   else if (Chassis_Info.Target.Follow_Err < -180.f)
     Chassis_Info.Target.Follow_Err += 360.f;
-  Chassis_Info.Transform.Angle = Chassis_Info.Target.Follow_Err-45;
+  Chassis_Info.Transform.Angle = Chassis_Info.Target.Follow_Err-CHASSIS_MOUNT_ANGLE_OFFSET;
   Chassis_Info.Transform.COS = arm_cos_f32(Chassis_Info.Transform.Angle * DegreesToRadians);
   Chassis_Info.Transform.SIN = arm_sin_f32(Chassis_Info.Transform.Angle * DegreesToRadians);
   Chassis_Info.Target.Vy = -(Chassis_Info.Row.Vx * Chassis_Info.Transform.COS - Chassis_Info.Row.Vy * Chassis_Info.Transform.SIN);
@@ -100,9 +101,9 @@ void Chassis_Target()
     break;
   case Chassis_Spin:
   if(Chassis_Info.SuperCap.SuperCap_Flag!=true)
-    Chassis_Info.Target.Vw = 6000;
+    Chassis_Info.Target.Vw = CHASSIS_SPIN_RPM;
 	else
-		Chassis_Info.Target.Vw = 8000;
+		Chassis_Info.Target.Vw = CHASSIS_SPIN_RPM_SUPERCAP;
     break;
 
   case Chassis_OFF:
@@ -155,12 +156,12 @@ void State_Judge()
 		    
     if (Chassis_Info.SuperCap.SuperCap_Flag == true)
     {
-      Chassis_PowerCtrl.Power_Max = 150;
+      Chassis_PowerCtrl.Power_Max = CHASSIS_POWER_MAX_SUPERCAP;
 
     }
     else
     {
-        PID_Calculate(&Pid_PowerBuff, 60.f, Referee_System_Info.power_heat_data.buffer_energy);
+        PID_Calculate(&Pid_PowerBuff, CHASSIS_POWER_BUFFER_TARGET, Referee_System_Info.power_heat_data.buffer_energy);
         Chassis_PowerCtrl.Power_Max = (Referee_System_Info.robot_status.chassis_power_limit - Pid_PowerBuff.Output);
     }
    

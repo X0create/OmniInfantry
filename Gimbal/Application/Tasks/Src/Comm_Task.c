@@ -1,4 +1,5 @@
 #include "Comm_Task.h"
+#include "can_protocol.h"
 
 Comm_Info_Typedef Comm_Info;
 static void Mode_Com();
@@ -45,7 +46,7 @@ void Comm()
   Comm_Info.Move.Vy = KeyBoard_Info.key.set.D * 660 - KeyBoard_Info.key.set.A * 660 + VT13_Info.RC.Channel[3] + remote_ctrl.rc.ch[2] + remote_ctrl.key.set.D * 660 - remote_ctrl.key.set.A * 660;
 
 
-  CAN2_TxFrame.header.StdId = 0x310;
+  CAN2_TxFrame.header.StdId = CAN_ID_GIMBAL_TO_CHASSIS;
   CAN2_TxFrame.Data[0] = (uint8_t)(Comm_Info.Move.Vx >> 8);
   CAN2_TxFrame.Data[1] = (uint8_t)(Comm_Info.Move.Vx);
   CAN2_TxFrame.Data[2] = (uint8_t)(Comm_Info.Move.Vy >> 8);
@@ -56,7 +57,7 @@ void Comm()
 	CAN2_TxFrame.Data[7] = (uint8_t)(KeyBoard_Info.key.v);
   USER_CAN_TxMessage(&CAN2_TxFrame);
 
-  CAN1_TxFrame.header.StdId = 0x200;
+  CAN1_TxFrame.header.StdId = DJI_TxFrame_Low;
   CAN1_TxFrame.Data[0] = (uint8_t)(Shoot_Info.Output.ShootR >> 8);
   CAN1_TxFrame.Data[1] = (uint8_t)(Shoot_Info.Output.ShootR);
   CAN1_TxFrame.Data[2] = (uint8_t)(Shoot_Info.Output.ShootL >> 8);

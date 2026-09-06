@@ -16,7 +16,7 @@
 #include "Quaternion.h"
 #include "math.h"
 #include "pid.h"
-#include "config.h"
+#include "common_def.h"
 
 /* Private function prototypes -----------------------------------------------*/
 /**

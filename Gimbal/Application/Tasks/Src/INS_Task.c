@@ -15,6 +15,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "cmsis_os.h"
 #include "INS_Task.h"
+#include "config.h"    /* IMU 轴序索引等本车参数 */
 #include "bsp_tim.h"
 #include "bmi088.h"
 #include "Quaternion.h"

@@ -23,6 +23,21 @@
 #include <stdio.h>
 #include <string.h>
 
+/* Link monitor constants ----------------------------------------------------*/
+/**
+  * @brief 图传链路掉线监测
+  * @note  计数由 Detect_Task 以 5ms 周期递减，超时时长 =
+  *        (RELOAD - LOST_THRESHOLD) x 5ms。
+  *        图传键鼠 (1000-50)x5ms = 4.75s，VT13 (250-50)x5ms = 1s，
+  *        两条链路不一致是既有状态，此处只做具名化、未统一数值。
+  */
+/** 图传键鼠链路：收到一帧后的重装值 */
+#define IMAGE_TRANS_ONLINE_CNT_RELOAD   1000
+/** VT13 遥控链路：收到一帧后的重装值 */
+#define VT13_ONLINE_CNT_RELOAD          250
+/** 两条链路共用的掉线判定阈值 */
+#define IMAGE_TRANS_LOST_THRESHOLD      0x32U
+
 #define IMAGE_TRANS_RX_LENGTH  39  //frame_header 5bytes , cmd_id 2bytes , data_max 30bytes , crc16 2bytes = bytes
 
 #define FrameHeader_Length    5U   /*!< the length of frame header */

@@ -19,10 +19,32 @@
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "config.h"
+#include "common_def.h"
 #include "stm32f4xx.h"
 #include "pid.h"
 #include "bsp_can.h"
+
+/* Exported constants --------------------------------------------------------*/
+/**
+  * @brief 电机物理常量
+  * @note  这些值由电机型号决定，与装在哪台车上无关，两块板应保持一致。
+  *        过温阈值一类的"策略"参数不在这里（两板取值不同）。
+  */
+/** DJI 电调编码器一圈的计数值 */
+#define DJI_ENCODER_RESOLUTION   8192
+/** RMD 电机编码器一圈的计数值 */
+#define RMD_ENCODER_RESOLUTION   32768
+/** M3508 减速比，3591/187 约等于 19.2:1 */
+#define M3508_REDUCTION_RATIO    3591.f / 187.f
+/** M2006 编码器到输出轴角度的换算系数
+  * @note 手册标称减速比为 36:1，原代码取 90.f。此处只是把数值具名化，
+  *       未做任何改动；若发现角度读数不对，先查这个值。 */
+#define M2006_REDUCTION_RATIO    90.f
+/** 达妙电机 MIT 模式下 KP 的取值上限（电机固件常量） */
+#define DM_KP_MAX                500
+/** 达妙电机 MIT 模式下 KD 的取值上限（电机固件常量） */
+#define DM_KD_MAX                5
+
 
 /* Exported types ------------------------------------------------------------*/
 enum 

@@ -1,4 +1,5 @@
 #include "Comm_Task.h"
+#include "can_protocol.h"
 
 
 Comm_Info_Typedef Comm_Info;
@@ -60,7 +61,7 @@ void Mode_Com()
 }
 void Comm() 
 {
-	CAN1_TxFrame.header.StdId=0x200;
+	CAN1_TxFrame.header.StdId=DJI_TxFrame_Low;
 	CAN1_TxFrame.Data[0] = (uint8_t)( Chassis_PowerCtrl.Output[0]>>8);
 	CAN1_TxFrame.Data[1] = (uint8_t)Chassis_PowerCtrl.Output[0];
 	CAN1_TxFrame.Data[2] = (uint8_t)(Chassis_PowerCtrl.Output[1]>>8);
@@ -70,11 +71,11 @@ void Comm()
 	CAN1_TxFrame.Data[6] = (uint8_t)(Chassis_PowerCtrl.Output[3]>>8);
 	CAN1_TxFrame.Data[7] = (uint8_t)Chassis_PowerCtrl.Output[3];
   USER_CAN_TxMessage(&CAN1_TxFrame);
-	CAN1_TxFrame.header.StdId=0x1FF;
+	CAN1_TxFrame.header.StdId=DJI_TxFrame_High;
 	CAN1_TxFrame.Data[0] = (uint8_t)(Shoot_Info.Output.BulletFeed>>8);
 	CAN1_TxFrame.Data[1] = (uint8_t)(Shoot_Info.Output.BulletFeed);
   USER_CAN_TxMessage(&CAN1_TxFrame);
-	CAN2_TxFrame.header.StdId=0x210;
+	CAN2_TxFrame.header.StdId=CAN_ID_CHASSIS_TO_GIMBAL;
 	CAN2_TxFrame.Data[0] = (uint8_t)(Referee_System_Info.robot_status.chassis_power_limit>>8);
     CAN2_TxFrame.Data[1] = (uint8_t)Referee_System_Info.robot_status.chassis_power_limit;
 	CAN2_TxFrame.Data[2] = (uint8_t)(Referee_System_Info.power_heat_data.buffer_energy);

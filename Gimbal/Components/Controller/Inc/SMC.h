@@ -1,6 +1,6 @@
 #include "stm32f4xx_hal.h"
 #include "math.h"
-#include "config.h"
+#include "common_def.h"
 #ifndef _SMC_H_
 #define _SMC_H_
 #define SMC_PARAMETER_NUM 7

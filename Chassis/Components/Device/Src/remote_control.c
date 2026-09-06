@@ -22,7 +22,7 @@
  */
 Remote_Info_Typedef remote_ctrl={
 	.rc_lost = true,
-	.online_cnt = 0xFAU,
+	.online_cnt = REMOTE_ONLINE_CNT_RELOAD,
 };
 
 /**
@@ -83,7 +83,7 @@ void SBUS_TO_RC(volatile const uint8_t *sbus_buf, Remote_Info_Typedef  *remote_c
     remote_ctrl->rc.ch[4] -= RC_CH_VALUE_OFFSET;
     
 		/* reset the online count */
-		remote_ctrl->online_cnt = 0xFAU;
+		remote_ctrl->online_cnt = REMOTE_ONLINE_CNT_RELOAD;
 		
 		/* reset the lost flag */
 		remote_ctrl->rc_lost = false;
@@ -128,13 +128,13 @@ void Remote_Info_Update(uint32_t *StdId, uint8_t *rxBuf,Remote_Info_Typedef *rem
 void Remote_Message_Moniter(Remote_Info_Typedef  *remote_ctrl)
 {
   /* Juege the device status */
-  if(remote_ctrl->online_cnt <= 0x32U)
+  if(remote_ctrl->online_cnt <= REMOTE_LOST_THRESHOLD)
   {
     /* clear the data */
     memset(remote_ctrl,0,sizeof(Remote_Info_Typedef));
 
     /* reset the online count */
-    remote_ctrl->online_cnt = 0xFAU;
+    remote_ctrl->online_cnt = REMOTE_ONLINE_CNT_RELOAD;
 		
     /* set the lost flag */
 		remote_ctrl->rc_lost = true;

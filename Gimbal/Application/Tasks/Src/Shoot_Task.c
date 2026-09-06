@@ -53,8 +53,8 @@ void Shoot_Task(void const *argument)
 
 void Shoot_Init()
 {
-    Shoot_Info.Target.BulletFeed = 18;
-    Shoot_Info.Target.Shoot = 6550;
+    Shoot_Info.Target.BulletFeed = SHOOT_FEED_TARGET;
+    Shoot_Info.Target.Shoot = SHOOT_FRICTION_RPM_MIN;
     PID_Init(&Pid_Shoot_L, PID_VELOCITY, Shoot_Pid_Param[SHOOT_L]);
     PID_Init(&Pid_Shoot_R, PID_VELOCITY, Shoot_Pid_Param[SHOOT_R]);
     PID_Init(&Pid_Shoot_FV, PID_POSITION, Shoot_Pid_Param[SHOOT_FV]);
@@ -68,7 +68,7 @@ static float SpeedAdapt(float real_S, float min_S, float max_S, float up_num, fl
     float res = 0;
     static uint8_t SpeedErr_cnt = 0;
 
-    if (real_S < min_S && real_S > 8)
+    if (real_S < min_S && real_S > SHOOT_SPEED_VALID_MIN)
 
         SpeedErr_cnt++;
 
@@ -90,7 +90,7 @@ static void ShootSpeed_Ctrl()
 {
     if (Comm_Info.Referee.Shoot_Velocity != Shoot_Info.Last_Firespeed)
     {
-        Shoot_Info.Fire_Speed_Offset += SpeedAdapt(Comm_Info.Referee.Shoot_Velocity, 22.5f, 23.5f, 9.f, 23.f);
+        Shoot_Info.Fire_Speed_Offset += SpeedAdapt(Comm_Info.Referee.Shoot_Velocity, SHOOT_SPEED_ADAPT_MIN, SHOOT_SPEED_ADAPT_MAX, SHOOT_SPEED_ADAPT_UP, SHOOT_SPEED_ADAPT_DOWN);
         Shoot_Info.Target.Shoot += Shoot_Info.Fire_Speed_Offset;
     }
     Shoot_Info.Last_Firespeed = Comm_Info.Referee.Shoot_Velocity;
@@ -103,7 +103,7 @@ static void ShootSpeed_Ctrl()
 												
 static void Shoot_On()
 {
-    VAL_LIMIT(Shoot_Info.Target.Shoot, 6550, 6700);
+    VAL_LIMIT(Shoot_Info.Target.Shoot, SHOOT_FRICTION_RPM_MIN, SHOOT_FRICTION_RPM_MAX);
     Shoot_Info.Output.ShootL = PID_Calculate(&Pid_Shoot_L,+Shoot_Info.Target.Shoot, Shoot_Motor[Shoot_L].Data.velocity);
     Shoot_Info.Output.ShootR = PID_Calculate(&Pid_Shoot_R,-Shoot_Info.Target.Shoot, Shoot_Motor[Shoot_R].Data.velocity);
 
@@ -114,11 +114,11 @@ static void Shoot_Off()
     Shoot_Info.Fire_Flag = false;
     Comm_Info.Referee.Referee_Update_Flag = false;
 
-    if (abs(Shoot_Motor[Shoot_L].Data.velocity) > 1000)
+    if (abs(Shoot_Motor[Shoot_L].Data.velocity) > SHOOT_FRICTION_STOP_RPM)
         Shoot_Info.Output.ShootL = PID_Calculate(&Pid_Shoot_L, 0, Shoot_Motor[Shoot_L].Data.velocity);
     else
         Shoot_Info.Output.ShootL = 0;
-    if (abs(Shoot_Motor[Shoot_R].Data.velocity) > 1000)
+    if (abs(Shoot_Motor[Shoot_R].Data.velocity) > SHOOT_FRICTION_STOP_RPM)
         Shoot_Info.Output.ShootR = PID_Calculate(&Pid_Shoot_R, 0, Shoot_Motor[Shoot_R].Data.velocity);
     else
         Shoot_Info.Output.ShootR = 0;

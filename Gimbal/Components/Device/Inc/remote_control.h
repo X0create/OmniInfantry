@@ -57,6 +57,21 @@
  */
 #define MOUSE_SPEED_MAX		300U
 
+/* Link monitor constants ----------------------------------------------------*/
+/**
+  * @brief 遥控链路掉线监测
+  * @note  计数由 Detect_Task 以 5ms 周期递减，所以超时时长 =
+  *        (RELOAD - LOST_THRESHOLD) x 5ms。当前 (250-50)x5ms = 1s。
+  *        改 Detect_Task 的周期会连带改掉超时时长，这是隐式耦合。
+  * @note  本车三条链路的重装值并不一致（DT7=250，VT13=250，图传键鼠=1000），
+  *        图传键鼠那条实际要 4.75s 才判掉线。此处只做具名化，未统一数值。
+  */
+/** 收到一帧后把计数重装到此值 */
+#define REMOTE_ONLINE_CNT_RELOAD    0xFAU
+/** 计数降到此值以下判定掉线 */
+#define REMOTE_LOST_THRESHOLD       0x32U
+
+
 /* Exported types ------------------------------------------------------------*/
 /**
  * @brief typedef enum that contains the status of the keyboard.

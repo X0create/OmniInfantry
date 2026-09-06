@@ -55,7 +55,7 @@ void Image_Transmission_Info_Update(uint8_t *Buff){
            Image_Transmission_Info.remote_control.left_button_down  = Buff[Image_Transmission_Info.Index + FrameHeader_Length + CMDID_Length + 6];
 				   Image_Transmission_Info.remote_control.right_button_down = Buff[Image_Transmission_Info.Index + FrameHeader_Length + CMDID_Length + 7];
 					 Image_Transmission_Info.remote_control.Key.keyboard_value = bit8TObit16(&Buff[Image_Transmission_Info.Index + FrameHeader_Length + CMDID_Length + 8]);
-				   Image_Transmission_Info.remote_control.online_cnt = 1000;
+				   Image_Transmission_Info.remote_control.online_cnt = IMAGE_TRANS_ONLINE_CNT_RELOAD;
 					 Image_Transmission_Info.remote_control.lost = 0;
 
 				}
@@ -103,7 +103,7 @@ void VT13_Info_Update(uint8_t *Buff ,VT13_Info_TypeDef *VT13_Info){
 				VT13_Info->Mouse.Press_M = (Buff[16] >> 4) & 0x03;
 
         VT13_Info->Key.V = (Buff[17] | (Buff[18] << 8));
-				VT13_Info->online_cnt = 250;
+				VT13_Info->online_cnt = VT13_ONLINE_CNT_RELOAD;
 				VT13_Info->lost = 0;
 				
 				
@@ -143,7 +143,7 @@ static int16_t bit8TObit16(uint8_t change_info[2])
 void Image_Transmission_Message_Moniter(Image_Transmission_Info_TypeDef  *Image_Transmission_Info)
 {
   /* Juege the device status */
-  if(Image_Transmission_Info->remote_control.online_cnt <= 0x32U)
+  if(Image_Transmission_Info->remote_control.online_cnt <= IMAGE_TRANS_LOST_THRESHOLD)
   {
     /* clear the data */
     memset(&Image_Transmission_Info->remote_control,0,sizeof(remote_control_t));
@@ -163,7 +163,7 @@ void Image_Transmission_Message_Moniter(Image_Transmission_Info_TypeDef  *Image_
 void VT13_Message_Moniter(VT13_Info_TypeDef  *VT13_Info)
 {
   /* Juege the device status */
-  if(VT13_Info->online_cnt <= 0x32U)
+  if(VT13_Info->online_cnt <= IMAGE_TRANS_LOST_THRESHOLD)
   {
     /* clear the data */
     memset(VT13_Info,0,sizeof(VT13_Info_TypeDef));

@@ -47,7 +47,7 @@ void Shoot_Task(void const *argument)
 
 void Shoot_Init()
 {
-    Shoot_Info.Target.BulletFeed =10;
+    Shoot_Info.Target.BulletFeed =SHOOT_FEED_RPS_DEFAULT;
     PID_Init(&Pid_Shoot_L, PID_VELOCITY, Shoot_Pid_Param[SHOOT_L]);
     PID_Init(&Pid_Shoot_R, PID_VELOCITY, Shoot_Pid_Param[SHOOT_R]);
     PID_Init(&Pid_Shoot_FV, PID_POSITION, Shoot_Pid_Param[SHOOT_FV]);
@@ -61,14 +61,14 @@ static void Fire_Ctrl()
 
     Shoot_Info.HeatCtrl.Heat_Surplus =  Referee_System_Info.robot_status.shooter_barrel_heat_limit-Referee_System_Info.power_heat_data.shooter_17mm_barrel_heat;
 
-if(Shoot_Info.HeatCtrl.Heat_Surplus>80)
-	Shoot_Info.Target.BulletFeed=20;
+if(Shoot_Info.HeatCtrl.Heat_Surplus>SHOOT_HEAT_SURPLUS_FREE)
+	Shoot_Info.Target.BulletFeed=SHOOT_FEED_RPS_MAX;
 	else
     if (Shoot_Info.HeatCtrl.ShootCount == 0)
     {
         Shoot_Info.HeatCtrl.ShootTime = (Shoot_Info.HeatCtrl.Heat_Surplus + 2 * Referee_System_Info.robot_status.shooter_barrel_cooling_value) * 10;
-        VAL_LIMIT(Shoot_Info.HeatCtrl.ShootTime, 100, 5600);
-        if (Shoot_Info.HeatCtrl.Heat_Surplus < 50)
+        VAL_LIMIT(Shoot_Info.HeatCtrl.ShootTime, SHOOT_TIME_MIN, SHOOT_TIME_MAX);
+        if (Shoot_Info.HeatCtrl.Heat_Surplus < SHOOT_HEAT_SURPLUS_WARN)
         {
 
             Shoot_Info.HeatCtrl.Shoot_Speed = (BulletHeat17 * Shoot_Info.HeatCtrl.Heat_Surplus - Referee_System_Info.robot_status.shooter_barrel_cooling_value - 3 * BulletHeat17) / (BulletHeat17 * (Shoot_Info.HeatCtrl.ShootTime / 100.0f)) + Comm_Info.Referee.barrel_cooling_value / BulletHeat17;
@@ -112,10 +112,10 @@ static void Shoot_On()
 
 if(Comm_Info.Shoot_Mode==Shoot_Repeat)
 {
-        if ((Chassis_Motor[4].Data.current <= -9600) && !Shoot_Info.Reload)
+        if ((Chassis_Motor[4].Data.current <= SHOOT_STUCK_CURRENT) && !Shoot_Info.Reload)
         {
             Shoot_Info.Stuck_Times++;
-            if (Shoot_Info.Stuck_Times > 100)
+            if (Shoot_Info.Stuck_Times > SHOOT_STUCK_COUNT)
             {
                 Shoot_Info.Reload = 1;
                 Shoot_Info.Stuck_Times = 0;
@@ -123,15 +123,15 @@ if(Comm_Info.Shoot_Mode==Shoot_Repeat)
         } // 卡弹检测
         if (Shoot_Info.Reload == 1)
         {
-            Shoot_Info.Target.BulletFeed = -10;
+            Shoot_Info.Target.BulletFeed = SHOOT_FEED_RPS_REVERSE;
             Shoot_Info.Return_Times++;
-            if ((Chassis_Motor[4].Data.current > 4000) || Shoot_Info.Return_Times >= 100)
+            if ((Chassis_Motor[4].Data.current > SHOOT_REVERSE_EXIT_CURRENT) || Shoot_Info.Return_Times >= SHOOT_REVERSE_TIMEOUT)
             {
                 Shoot_Info.Return_Times = 0;
                 Shoot_Info.Reload = 0;
             }
         } // 反转
-        PID_Calculate(&Pid_Shoot_FV, Shoot_Info.Target.BulletFeed * 540.f, Chassis_Motor[4].Data.velocity);
+        PID_Calculate(&Pid_Shoot_FV, Shoot_Info.Target.BulletFeed * SHOOT_FEED_RPS_TO_RPM, Chassis_Motor[4].Data.velocity);
 
         // 更新双环期望角度，防止连发切单发会持续反转
         if (Comm_Info.Gimbal_Mode == Gimbal_AotoAim)

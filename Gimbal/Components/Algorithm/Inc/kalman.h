@@ -23,7 +23,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stdint.h"
 #include "arm_math.h"
-#include "config.h"
+#include "common_def.h"
 
 /* Exported defines -----------------------------------------------------------*/
 /**

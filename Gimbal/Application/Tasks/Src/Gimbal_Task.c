@@ -1,4 +1,5 @@
 #include "Gimbal_Task.h"
+#include "config.h"    /* 云台与发射控制参数 */
 
 Gimbal_Typedef_Info Gimbal_Info;
 SweepFrequency_Info_Typedef SF_Info;
@@ -83,10 +84,10 @@ void Gimbal_Init()
     PID_Init(&Pid_AotoPitch_V, PID_POSITION, Gimbal_Pid_Param[AOTOPITCH_V]);
     Gimbal_Info.Target.Yaw = INS_Info.Yaw_Angle;
     Gimbal_Info.Target.Pitch = INS_Info.Pitch_Angle;
-	  Gimbal_Info.Forward.K_Pitch=1.f;
-	  Gimbal_Info.Forward.K_Yaw=0.01f;
-    Gimbal_Info.Pitch_Max = 25.f;
-    Gimbal_Info.Pitch_Min = -30.f;
+	  Gimbal_Info.Forward.K_Pitch=GIMBAL_FORWARD_K_PITCH;
+	  Gimbal_Info.Forward.K_Yaw=GIMBAL_FORWARD_K_YAW;
+    Gimbal_Info.Pitch_Max = GIMBAL_PITCH_MAX;
+    Gimbal_Info.Pitch_Min = GIMBAL_PITCH_MIN;
 }
 
 void Gimbal_On()
@@ -95,12 +96,12 @@ void Gimbal_On()
     {
 			if(Comm_Info.Control_Mode==Remote_Control)
 			{
-        Gimbal_Info.Target.Yaw -= (VT13_Info.RC.Channel[0] + remote_ctrl.rc.ch[0]) * 0.0007f ;
-        Gimbal_Info.Target.Pitch -= (VT13_Info.RC.Channel[1] * 0.00025f + remote_ctrl.rc.ch[1] * 0.00025f );
+        Gimbal_Info.Target.Yaw -= (VT13_Info.RC.Channel[0] + remote_ctrl.rc.ch[0]) * GIMBAL_RC_YAW_SENSITIVITY ;
+        Gimbal_Info.Target.Pitch -= (VT13_Info.RC.Channel[1] * GIMBAL_RC_PITCH_SENSITIVITY + remote_ctrl.rc.ch[1] * GIMBAL_RC_PITCH_SENSITIVITY );
 			}
 			else{
-			Gimbal_Info.Target.Yaw -=  (KeyBoard_Info.mouse.x) * 0.002f;
-				Gimbal_Info.Target.Pitch -= (KeyBoard_Info.mouse.y) * 0.0032f;
+			Gimbal_Info.Target.Yaw -=  (KeyBoard_Info.mouse.x) * GIMBAL_MOUSE_YAW_SENSITIVITY;
+				Gimbal_Info.Target.Pitch -= (KeyBoard_Info.mouse.y) * GIMBAL_MOUSE_PITCH_SENSITIVITY;
 			}
     }
     else if (Comm_Info.Gimbal_Mode == Gimbal_AutoAim)
@@ -114,8 +115,8 @@ void Gimbal_On()
         {
             Gimbal_Info.Target.Yaw = INS_Info.Yaw_Angle;
             Gimbal_Info.Target.Pitch = INS_Info.Pitch_Angle;
-            Gimbal_Info.Target.Yaw -= ((VT13_Info.RC.Channel[0] + remote_ctrl.rc.ch[0]) * 0.0007f + KeyBoard_Info.mouse.x * 0.002f);
-            Gimbal_Info.Target.Pitch-= (VT13_Info.RC.Channel[1] * 0.00025f + remote_ctrl.rc.ch[1] * 0.00025f + KeyBoard_Info.mouse.y * 0.0032f);
+            Gimbal_Info.Target.Yaw -= ((VT13_Info.RC.Channel[0] + remote_ctrl.rc.ch[0]) * GIMBAL_RC_YAW_SENSITIVITY + KeyBoard_Info.mouse.x * GIMBAL_MOUSE_YAW_SENSITIVITY);
+            Gimbal_Info.Target.Pitch-= (VT13_Info.RC.Channel[1] * GIMBAL_RC_PITCH_SENSITIVITY + remote_ctrl.rc.ch[1] * GIMBAL_RC_PITCH_SENSITIVITY + KeyBoard_Info.mouse.y * GIMBAL_MOUSE_PITCH_SENSITIVITY);
         }
     }
 	  if (Gimbal_Info.Target.Yaw > 180.f)

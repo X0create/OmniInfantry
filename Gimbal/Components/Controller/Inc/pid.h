@@ -17,7 +17,7 @@
 #define CONTROLLER_PID_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "config.h"
+#include "common_def.h"
 #include "lpf.h"
 /**
  * @brief macro definition of the number of pid parameters

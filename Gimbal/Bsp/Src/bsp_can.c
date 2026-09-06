@@ -17,6 +17,7 @@
 #include "can.h"
 #include "motor.h"
 #include "Comm_Task.h"
+#include "can_protocol.h"
 
 /* Private variables ---------------------------------------------------------*/
 /**
@@ -146,7 +147,7 @@ DM_Motor_Info_Update(StdId,data,&Gimbal_Motor[Pitch]);
 static void CAN2_RxFifo1RxHandler(uint32_t *StdId, uint8_t data[8])
 {
 DM_Motor_Info_Update(StdId,data,&Gimbal_Motor[Yaw]);
-  if (*StdId == 0x210)
+  if (*StdId == CAN_ID_CHASSIS_TO_GIMBAL)
   {
     Comm_Info.Chassis_Lost = (data[5] >> 1) & 0x01;
     Comm_Info.Gimbal_Lost= data[5] & 0x01;

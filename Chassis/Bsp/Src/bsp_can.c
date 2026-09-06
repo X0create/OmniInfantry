@@ -20,6 +20,7 @@
 #include "motor.h"
 #include "Chassis_Task.h"
 #include "Shoot_Task.h"
+#include "can_protocol.h"
 
 /* Private variables ---------------------------------------------------------*/
 /**
@@ -144,7 +145,7 @@ static void CAN1_RxFifo0RxHandler(uint32_t *StdId, uint8_t Data[8])
 static void CAN2_RxFifo1RxHandler(uint32_t *StdId, uint8_t Data[8])
 {
   DM_Motor_Info_Update(StdId, Data, &Gimbal_Motor);
-  if (*StdId == 0x310)
+  if (*StdId == CAN_ID_GIMBAL_TO_CHASSIS)
   {
     Comm_Info.Move.Vy = -((int16_t)Data[0] << 8 | (int16_t)Data[1]);
     Comm_Info.Move.Vx = ((int16_t)Data[2] << 8 | (int16_t)Data[3]);
@@ -156,7 +157,7 @@ static void CAN2_RxFifo1RxHandler(uint32_t *StdId, uint8_t Data[8])
     Comm_Info.Chassis_Mode = Data[5];
     remote_ctrl.key.v = ((int16_t)Data[6] << 8 | (int16_t)Data[7]);
   }
-	  if (*StdId == 0x211)
+	  if (*StdId == CAN_ID_SUPERCAP)
 		{
 	Chassis_Info.SuperCap.Surplus_Energy=Data[4];
 	Chassis_Info.SuperCap.Chassis_Power=	((int16_t)Data[6]<<8|(int16_t)Data[7])/100.f;
