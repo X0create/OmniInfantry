@@ -51,5 +51,9 @@ extern void BSP_CAN_Init(void);
   */
 extern void USER_CAN_TxMessage(CAN_TxFrame_TypeDef *TxHeader);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_CAN_H
 

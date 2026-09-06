@@ -41,4 +41,8 @@ extern void BMI088_GYRO_NS_L(void);
   */
 extern void BMI088_GYRO_NS_H(void);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_GPIO_H

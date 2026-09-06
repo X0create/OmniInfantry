@@ -9,7 +9,6 @@
 #include "bsp_uart.h"
 #include "tim.h"
 #include "config.h"
-#include "config.h"
 
 typedef enum
 {

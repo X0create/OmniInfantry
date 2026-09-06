@@ -33,5 +33,9 @@ extern void Bsp_Tim_Init(void);
   * @brief  Set the BMI088 Heat_Power TIM Capture Compare Register value.
   */
 extern void Heat_Power_Control(uint16_t compare);
-extern float GetDeltaT(float *last_time);
+extern float GetDeltaT(float *last_time);  // 模板保留，暂未使用
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_TIM_H

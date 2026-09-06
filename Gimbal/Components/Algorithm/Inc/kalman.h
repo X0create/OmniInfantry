@@ -157,6 +157,10 @@ extern void Kalman_Filter_Init(KalmanFilter_Info_TypeDef *KF,uint8_t Xhat_Size,u
   */
 extern float *Kalman_Filter_Update(KalmanFilter_Info_TypeDef *KF);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //KALMAN_FILTER_H
 
 

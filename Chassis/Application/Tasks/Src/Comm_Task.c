@@ -84,7 +84,7 @@ void Comm()
 	CAN2_TxFrame.Data[6] = (uint8_t)(Referee_System_Info.shoot_data.initial_speed*10.f);                      
   USER_CAN_TxMessage(&CAN2_TxFrame);
 	
-};
+}
 
 
 void UI_Init()

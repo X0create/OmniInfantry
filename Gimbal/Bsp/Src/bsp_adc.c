@@ -101,8 +101,6 @@ VoltageMonitor_Info_Typdef Voltage_Monitor;
  /*以下为电压监测相关实现*/
 
  /** @brief 全局电压监测实例 */
- VoltageMonitor_Info_Typdef voltage_monitor = {0};
-
  /**
   * @brief 初始化电压监测器
   * @param monitor 电压监测器指针

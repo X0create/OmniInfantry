@@ -30,4 +30,8 @@ extern "C" {
   */
 extern void BSP_USART_Init(void);
 extern void Vofa_JustFloat(float *_data, uint8_t _num);
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_UART_H

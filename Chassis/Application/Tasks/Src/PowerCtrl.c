@@ -122,7 +122,7 @@ void PowerCtrl(PowerCtrl_Typedef *PowerCtrl_Info, PID_Info_TypeDef Pid[4], DJI_M
             PowerCtrl_Info->C = PowerCtrl_Info->Target.Omiga_2[i] * PowerCtrl_Info->Param.K2 + PowerCtrl_Info->Param.K3 * 0.25 - PowerCtrl_Info->Power_Limit[i];
             PowerCtrl_Info->Delta = powf(PowerCtrl_Info->B, 2.f) - 4 * PowerCtrl_Info->A * PowerCtrl_Info->C;
             // 二次方程系数带入
-            if (isnan(PowerCtrl_Info->Delta) == 1 || isinf(PowerCtrl_Info->Delta) == 1)
+            if (isnan(PowerCtrl_Info->Delta) || isinf(PowerCtrl_Info->Delta))
                 PowerCtrl_Info->Delta = 0;
 
             if (PowerCtrl_Info->Delta >= 0)

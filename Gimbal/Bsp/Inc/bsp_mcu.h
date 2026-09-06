@@ -30,5 +30,9 @@ extern "C" {
   */
 extern void MCU_Init(void);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_MCU_H
 

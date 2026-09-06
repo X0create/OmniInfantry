@@ -85,6 +85,7 @@ static void User_Tim_SetCompare(TIM_HandleTypeDef *htim,uint32_t Channel,uint16_
   }
 }
 
+/* 模板保留，暂未使用 */
 float GetDeltaT(float *last_time)
 {
     float current_time = (float)HAL_GetTick()/1000.0f;

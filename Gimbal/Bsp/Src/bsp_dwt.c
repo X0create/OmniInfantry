@@ -102,7 +102,7 @@ void DWT_SysTimeUpdate(void)
 
     DWT_CNT_Update();
 
-    CYCCNT64 = (uint64_t)CYCCNT_RountCount * (uint64_t)UINT32_MAX + (uint64_t)cnt_now;
+    CYCCNT64 = (uint64_t)CYCCNT_RountCount * ((uint64_t)UINT32_MAX + 1ULL) + (uint64_t)cnt_now;
     CNT_TEMP1 = CYCCNT64 / CPU_FREQ_Hz;
     CNT_TEMP2 = CYCCNT64 - CNT_TEMP1 * CPU_FREQ_Hz;
     SysTime.s = CNT_TEMP1;
@@ -151,7 +151,7 @@ uint64_t DWT_GetTimeline_us(void)
 {
     DWT_SysTimeUpdate();
 
-    uint64_t DWT_Timelinef32 = SysTime.s * 1000000 + SysTime.ms * 1000 + SysTime.us;
+    uint64_t DWT_Timelinef32 = (uint64_t)SysTime.s * 1000000ULL + (uint64_t)SysTime.ms * 1000ULL + SysTime.us;
 
     return DWT_Timelinef32;
 }

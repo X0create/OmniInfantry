@@ -34,4 +34,8 @@ extern void Delay_us(uint32_t us);
   */
 extern void Delay_ms(uint32_t ms);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_TICK_H

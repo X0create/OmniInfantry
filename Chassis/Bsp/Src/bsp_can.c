@@ -31,7 +31,6 @@ CAN_RxFrame_TypeDef CAN2_RxFrame;
 /**
  * @brief the array that contains the Information of CAN Receive data.
  */
-static uint8_t USER_CAN_RxFrameData[8];
 
 CAN_TxFrame_TypeDef CAN1_TxFrame = {
     .hcan = &hcan1,

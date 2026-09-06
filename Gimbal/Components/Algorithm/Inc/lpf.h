@@ -61,9 +61,9 @@ typedef struct
 }Tracking_Differentiator_Info_TypeDef;	
 
 /* Extern Functions Prototypes ---------------------------------------------*/
-extern void Tracking_Differentiator_Init(Tracking_Differentiator_Info_TypeDef *TD,float r,float h);
+extern void Tracking_Differentiator_Init(Tracking_Differentiator_Info_TypeDef *TD,float r,float h);  // 模板保留，暂未使用（本板无实现）
 
-extern void Tracking_Differentiator_Update(Tracking_Differentiator_Info_TypeDef *TD,float Input);
+extern void Tracking_Differentiator_Update(Tracking_Differentiator_Info_TypeDef *TD,float Input);  // 模板保留，暂未使用（本板无实现）
 /**
   * @brief 根据函数中指定的参数初始化一阶低通滤波器.
   */
@@ -81,5 +81,9 @@ extern void  LowPassFilter2p_Init(LowPassFilter2p_Info_TypeDef *lpf,float alpha[
   */
 extern float LowPassFilter2p_Update(LowPassFilter2p_Info_TypeDef *lpf,float input);
 
-extern float sign(float input);
+extern float sign(float input);  // 模板保留，暂未使用（本板无实现）
+#ifdef __cplusplus
+}
+#endif
+
 #endif //LOWPASS_FILTER_H

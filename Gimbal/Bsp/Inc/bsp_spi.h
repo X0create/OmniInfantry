@@ -30,4 +30,8 @@ extern "C" {
   */
 extern uint8_t BMI088_Read_Write_Byte(uint8_t txdata);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_SPI_H

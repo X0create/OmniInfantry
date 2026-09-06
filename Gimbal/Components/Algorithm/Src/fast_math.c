@@ -308,11 +308,22 @@ float fm_log10_fast(float x) {
     return fm_log2_fast(x) * inv_log2_10;
 }
 
+/* 避免直接使用 <math.h> 的 NAN 宏：本工程为 fast 浮点模型，
+   armclang 会对其告警 -Wnan-infinity-disabled。
+   此处按 IEEE-754 位型构造同样的单精度 quiet NaN，
+   返回值与原先逐位相同。 */
+static inline float fm_qnan(void)
+{
+    fm_float_t u;
+    u.u = 0x7FC00000u;
+    return u.f;
+}
+
 float fm_pow_fast(float x, float y) {
     if (x <= 0.0f) {
         if (x == 0.0f) return 0.0f;
         /* ������������ */
-        return NAN;
+        return fm_qnan();
     }
     
     return fm_exp2_fast(y * fm_log2_fast(x));

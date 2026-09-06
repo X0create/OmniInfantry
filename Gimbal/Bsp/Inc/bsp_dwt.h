@@ -69,5 +69,9 @@ extern void DWT_Delay(float Delay);
   */
 extern void DWT_SysTimeUpdate(void);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_DWT_H
 

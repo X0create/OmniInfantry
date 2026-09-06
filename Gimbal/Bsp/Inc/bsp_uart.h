@@ -32,4 +32,8 @@ extern void BSP_USART_Init(void);
 extern void usart_printf(const char *fmt,...);
 extern void Usart_Justfloat_Transmit(float SendValue1,float SendValue2,float SendValue3);
 extern void Vofa_JustFloat(float *_data, uint8_t _num);
+#ifdef __cplusplus
+}
+#endif
+
 #endif //BSP_UART_H

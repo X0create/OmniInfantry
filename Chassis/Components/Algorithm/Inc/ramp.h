@@ -56,5 +56,9 @@ extern void MovingAverage_Init(MovingAverage_Info_TypeDef *MA,uint16_t length);
   */
 extern float MovingAverage_Update(MovingAverage_Info_TypeDef *MA,float input);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif //RAMP_H
 
